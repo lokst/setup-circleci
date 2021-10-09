@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        version: [0.1.15973, 0.1.15195]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup CircleCI
+      uses: ./
+      with:
+        version: ${{ matrix.version }}
+
+    - name: Capture CircleCI CLI version installed
+      run: |
+        export CIRCLECI_CLI_VERSION=$( circleci version )
+        echo 'CIRCLECI_CLI_VERSION_INSTALLED<<EOF' >> $GITHUB_ENV
+        circleci version >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+
+    - name: Verify
+      shell: python
+      env:
+        CIRCLECI_CLI_VERSION_EXPECTED: ${{ matrix.version }}
+      run: |
+        import sys, os
+        sys.exit(
+            int(not os.environ["CIRCLECI_CLI_VERSION_EXPECTED"] in os.environ["CIRCLECI_CLI_VERSION_INSTALLED"])
+        )

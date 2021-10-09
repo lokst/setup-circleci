@@ -1,0 +1,10 @@
+name: setup-circleci-cli
+description: Setup CircleCI CLI, circleci, on GitHub Actions runners
+inputs:
+  version:
+    description: Version of CircleCI CLI to install
+    required: false
+    default: 0.1.15973
+runs:
+  using: node12
+  main: dist/index.js
