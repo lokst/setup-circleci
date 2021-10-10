@@ -1,12 +1,22 @@
 const path = require('path');
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
+const { Octokit } = require("octokit");
 const { getDownloadObject } = require('./lib/utils');
 
 async function setup() {
   try {
     // Get version of tool to be installed
-    const version = core.getInput('version');
+    let version = core.getInput('version');
+    if (version == "latest") {
+      const octokit = new Octokit({
+        userAgent: "lokst/setup-circleci@v1.0",
+      });
+      const latestRelease = await octokit.rest.repos.getLatestRelease({ owner: 'CircleCI-Public', repo: 'circleci-cli' });
+      console.log(`latestRelease: ${latestRelease}`);
+      version = latestRelease.tag_name;
+      console.log(`Version to download: ${version}`);
+    }
 
     // Download the specific version of the tool, e.g. as a tarball/zipball
     const download = getDownloadObject(version);
