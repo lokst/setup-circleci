@@ -45,8 +45,8 @@ if (require.main === require.cache[eval('__filename')]) {
 const os = __webpack_require__(87);
 const path = __webpack_require__(622);
 
-// arch in [arm, x32, x64...] (https://nodejs.org/api/os.html#os_os_arch)
-// return value in [amd64, 386, arm]
+// arch in [x64] (https://nodejs.org/api/os.html#os_os_arch)
+// return value in [amd64]
 function mapArch(arch) {
   const mappings = {
     x64: 'amd64'
@@ -59,7 +59,7 @@ function mapArch(arch) {
 function mapOS(os) {
   const mappings = {
     linux: 'linux',
-    darwin: 'macOS',
+    darwin: 'darwin',
     win32: 'windows'
   };
   return mappings[os] || os;
