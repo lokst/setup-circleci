@@ -1,12 +1,20 @@
 const path = require('path');
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
+const axios = require('axios').default;
 const { getDownloadObject } = require('./lib/utils');
 
 async function setup() {
   try {
     // Get version of tool to be installed
-    const version = core.getInput('version');
+    let version = core.getInput('version');
+    if (version == "latest") {
+      const response = await axios.get(
+        'https://github.com/CircleCI-Public/circleci-cli/releases/latest'
+      );
+      const fetchedUrl = response.request.res.responseUrl
+      version = fetchedUrl.split('releases/tag/v')[1];
+    }
 
     // Download the specific version of the tool, e.g. as a tarball/zipball
     const download = getDownloadObject(version);
