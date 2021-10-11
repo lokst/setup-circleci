@@ -34,14 +34,22 @@ jobs:
         circleci version >> $GITHUB_ENV
         echo 'EOF' >> $GITHUB_ENV
 
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
     - name: Verify
       shell: python
       env:
         CIRCLECI_CLI_VERSION_EXPECTED: ${{ matrix.version }}
       run: |
-        import sys, os
+        import sys, os, urllib.request
+        version_expected = os.environ["CIRCLECI_CLI_VERSION_EXPECTED"]
+        if version_expected == 'latest':
+          version_expected = urllib.request.urlopen('https://github.com/CircleCI-Public/circleci-cli/releases/latest').url.split('tag/v')[1]
+
         sys.exit(
-            int(not os.environ["CIRCLECI_CLI_VERSION_EXPECTED"] in os.environ["CIRCLECI_CLI_VERSION_INSTALLED"])
+            int(not version_expected in os.environ["CIRCLECI_CLI_VERSION_INSTALLED"])
         )
     #- name: Setup tmate session
     #  uses: mxschmitt/action-tmate@v3
