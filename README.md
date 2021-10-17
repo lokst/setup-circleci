@@ -21,14 +21,13 @@ A specific version of the `circleci` CLI can be installed:
 steps:
 - uses: lokst/setup-circleci@v1
   with:
-    version:
-      1.1.0
+    version: 0.1.15973
 ```
 
 ## Inputs
 The actions supports the following inputs:
 
-- `version`: The version of `circleci` to install, defaulting to `0.1.15973`
+- `version`: The version of `circleci` to install, defaulting to `latest`
 
 ## License
 [MIT](LICENSE).
